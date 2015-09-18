@@ -7,8 +7,8 @@ app.use(morgan('combined'));
 app.use(express.static(__dirname + '/public'));
 
 var group_configs = [
-  {group_name: 'Group One', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['Queue One', 'Queue Two', 'Queue Three']},
-  {group_name: 'Group Two', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['Queue One', 'Queue Two', 'Queue Three']}
+  {group_name: 'Performance', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['hello.world.queue', 'tester.tester']},
+  {group_name: 'Integration', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['jenga.danube', 'danube.matador', 'danube.assetpublisher']}
 ];
 
 var group_data = {};
@@ -47,9 +47,13 @@ function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
       console.log('No more data in response.')
       var raw_data = JSON.parse(response)
       var queue_data = [];
-      queue_names.forEach(function (queue_name) {
-        var d = new Date();
-        queue_data.push({name: queue_name, state: 'idle', ready: d.getTime() / 1000});
+      raw_data.forEach(function (data) {
+        console.log('Q: ' + JSON.stringify(data));
+        queue_names.forEach(function (queue_name) {
+          if (data['name'] == queue_name) {
+            queue_data.push({name: queue_name, state: data['state'], persistent: data['messages_persistent']});
+          }
+        });
       });
       cb(queue_data);
     });
