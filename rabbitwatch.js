@@ -7,8 +7,8 @@ app.use(morgan('combined'));
 app.use(express.static(__dirname + '/public'));
 
 var group_configs = [
-  {group_name: 'Performance', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['hello.world.queue', 'tester.tester']},
-  {group_name: 'Integration', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['jenga.danube', 'danube.matador', 'danube.assetpublisher']}
+  {group_name: 'performance', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['hello.world.queue', 'tester.tester']},
+  {group_name: 'integration', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['jenga.danube', 'danube.matador', 'danube.assetpublisher']}
 ];
 
 var group_data = {};

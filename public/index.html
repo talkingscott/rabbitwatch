@@ -16,31 +16,65 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <h2>RabbitMQ Watch</h2>
-        </div>
-      </div>
-      <div id="content">
-        
-      </div>
+      <div id="content"></div>
     </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="bower_components/sprintf/dist/sprintf.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <!-- <script src="js/bootstrap.min.js"></script> -->
     
     <script type="text/javascript">
-      $(function () {
+      var groupHTML = function (group) {
+        var html =
+        '<div class="row">\n' +
+        '  <div class="col-md-12">\n' +
+        sprintf('    <h4>%s</h4>\n', group.name) +
+        '  </div>\n' +
+        '</div>\n' +
+        '<div class="row">\n' +
+        '  <div class="col-md-12">\n' +
+        '    <table class="table table-striped table-condensed">\n' +
+        '      <thead>\n' +
+        '        <tr><th width="20%">queue</th><th>state</th><th>persistent</th></tr>\n' +
+        '      </thead>\n' +
+        '      <tbody>\n';
+
+        group.queues.forEach(function (queue) {
+          html += sprintf('        <tr><td>%s</td><td>%s</td><td>%d</td></tr>\n', queue.name, queue.state, queue.persistent);
+        });
+
+        html +=
+        '      </tbody>\n' +
+        '    </table>\n' +
+        '  </div>\n' +
+        '</div>\n';
+
+        return html;
+      };
+
+      var responseHTML = function (response) {
+        var html = '';
+        response.forEach(function (group) {
+          html += groupHTML(group);
+        });
+        return html;
+      };
+
+      var updateContent = function () {
         content_div = $('#content');
         $.get('/api/queues')
           .done(function (data) {
-            content_div.html('<pre>' + JSON.stringify(data) + '</pre>');
+            var response = data['response'];
+            content_div.html(responseHTML(response));
           })
           .fail(function (err) {
             content_div.html('<pre>' + JSON.stringify(err) + '</pre>');
           });
+        setTimeout(updateContent, 5000);
+      }
+
+      $(function () {
+        updateContent();
       });
     </script>
   </body>

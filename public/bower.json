@@ -1,0 +1,23 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "homepage": "https://github.com/talkingscott/rabbitwatch",
+  "authors": [
+    "talkingscott <talkingscott@gmail.com>"
+  ],
+  "keywords": [
+    "foo"
+  ],
+  "license": "BSD-3-clause",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sprintf": "~1.0.3"
+  }
+}
