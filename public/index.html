@@ -11,17 +11,36 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">    
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <!-- Modal used to display errors-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog model-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalTitle"></h4>
+          </div>
+          <div class="modal-body">
+            <div id="myModalContent"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container used to display content -->
     <div class="container-fluid">
       <div id="content"></div>
     </div>
 
     <script src="bower_components/sprintf/dist/sprintf.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- <script src="js/bootstrap.min.js"></script> -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     
     <script type="text/javascript">
       var groupHTML = function (group) {
@@ -35,12 +54,12 @@
         '  <div class="col-md-12">\n' +
         '    <table class="table table-striped table-condensed">\n' +
         '      <thead>\n' +
-        '        <tr><th width="20%">queue</th><th>state</th><th>persistent</th></tr>\n' +
+        '        <tr><th width="20%">queue</th><th>state</th><th>total</th><th>ready</th><th>unacknowledged</th><th>publish rate</th><th>deliver rate</th><th>ack rate</th></tr>\n' +
         '      </thead>\n' +
         '      <tbody>\n';
 
         group.queues.forEach(function (queue) {
-          html += sprintf('        <tr><td>%s</td><td>%s</td><td>%d</td></tr>\n', queue.name, queue.state, queue.persistent);
+          html += sprintf('        <tr><td>%s</td><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%f</td><td>%f</td><td>%f</td></tr>\n', queue.name, queue.state, queue.total, queue.ready, queue.unacknowledged, queue.publish_rate, queue.deliver_rate, queue.ack_rate);
         });
 
         html +=
@@ -63,12 +82,14 @@
       var updateContent = function () {
         content_div = $('#content');
         $.get('/api/queues')
-          .done(function (data) {
+          .done(function (data, textStatus, jqXHR) {
             var response = data['response'];
             content_div.html(responseHTML(response));
           })
-          .fail(function (err) {
-            content_div.html('<pre>' + JSON.stringify(err) + '</pre>');
+          .fail(function (jqXHR, textStatus, errorThrown) {
+            $("#myModal").modal();
+            $("#myModalTitle").html('AJAX Failure');
+            $("#myModalContent").html(JSON.stringify(jqXHR) + '<br/>' + textStatus + '<br/>' + errorThrown);
           });
         setTimeout(updateContent, 5000);
       }

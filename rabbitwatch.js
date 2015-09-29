@@ -50,8 +50,32 @@ function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
       raw_data.forEach(function (data) {
         console.log('Q: ' + JSON.stringify(data));
         queue_names.forEach(function (queue_name) {
+          var publish_rate;
+          var deliver_rate;
+          var ack_rate;
           if (data['name'] == queue_name) {
-            queue_data.push({name: queue_name, state: data['state'], persistent: data['messages_persistent']});
+            if (data['message_stats']) {
+              if (data['message_stats']['publish_details']) {
+                publish_rate = data['message_stats']['publish_details']['rate']
+              } else {
+                publish_rate = 0.0;
+              }
+              if (data['message_stats']['deliver_details']) {
+                deliver_rate = data['message_stats']['deliver_details']['rate']
+              } else {
+                deliver_rate = 0.0;
+              }
+              if (data['message_stats']['ack_details']) {
+                ack_rate = data['message_stats']['ack_details']['rate']
+              } else {
+                ack_rate = 0.0;
+              }
+            } else {
+              publish_rate = 0.0;
+              deliver_rate = 0.0;
+              ack_rate = 0.0;
+            }
+            queue_data.push({name: queue_name, state: data['state'], total: data['messages'], ready: data['messages_ready'], unacknowledged: data['messages_unacknowledged'], publish_rate: publish_rate, deliver_rate: deliver_rate, ack_rate: ack_rate});
           }
         });
       });
