@@ -35,20 +35,20 @@ var server = app.listen(port, function () {
 function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
   options = {hostname: host, port: port, path: '/api/queues/' + encodeURIComponent(vhost), auth: user+':'+pass, headers: { 'Accept': 'application/json' }}
   http.get(options, function (res) {
-    console.log('STATUS: ' + res.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(res.headers));
+    //console.log('STATUS: ' + res.statusCode);
+    //console.log('HEADERS: ' + JSON.stringify(res.headers));
     var response = '';
     res.setEncoding('utf8');
     res.on('data', function (chunk) {
-      console.log('BODY: ' + chunk);
+      //console.log('BODY: ' + chunk);
       response += chunk;
     });
     res.on('end', function() {
-      console.log('No more data in response.')
+      //console.log('No more data in response.')
       var raw_data = JSON.parse(response)
       var queue_data = [];
       raw_data.forEach(function (data) {
-        console.log('Q: ' + JSON.stringify(data));
+        //console.log('Q: ' + JSON.stringify(data));
         queue_names.forEach(function (queue_name) {
           var publish_rate;
           var deliver_rate;
