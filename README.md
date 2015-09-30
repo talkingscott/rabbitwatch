@@ -1,5 +1,5 @@
 # rabbitwatch
-Watch multiple RabbitMQ servers
+Watch queues on multiple RabbitMQ servers in a single browser tab
 
 ## getting started
 
