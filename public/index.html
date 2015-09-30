@@ -85,7 +85,8 @@
           .done(function (data, textStatus, jqXHR) {
             var response = data['response'];
             content_div.html(responseHTML(response));
-          })
+            $("#myModal").modal('hide');
+           })
           .fail(function (jqXHR, textStatus, errorThrown) {
             $("#myModal").modal();
             $("#myModalTitle").html('AJAX Failure');

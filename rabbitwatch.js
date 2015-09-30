@@ -1,18 +1,24 @@
+#!/usr/bin/env node
+
+// node modules
+var fs = require('fs');
+var http = require('http');
+var path = require('path');
+
+// express and middleware modules
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
-var http = require('http');
-
 app.use(morgan('combined'));
 app.use(express.static(__dirname + '/public'));
 
-var group_configs = [
-  {group_name: 'performance', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['hello.world.queue', 'tester.tester']},
-  {group_name: 'integration', host: 'localhost', port: 15672, vhost: '/', user: 'guest', pass: 'guest', queue_names: ['jenga.danube', 'danube.matador', 'danube.assetpublisher']}
-];
+// configuration of servers/queues
+var group_configs = [];
 
+// per-server data about queues
 var group_data = {};
 
+// REST endpoint
 app.get('/api/queues', function (req, res) {
   res.set('Pragma', 'no-cache');
   res.set('Cache-Control', 'no-cache');
@@ -23,15 +29,7 @@ app.get('/api/queues', function (req, res) {
   res.send({response: response});
 });
 
-var port = parseInt(process.env['PORT']) || 3000
-
-var server = app.listen(port, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('rabbitwatch listening at http://%s:%s', host, port);
-});
-
+// Gets data about queues from one server using the RabbitMQ REST API
 function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
   options = {hostname: host, port: port, path: '/api/queues/' + encodeURIComponent(vhost), auth: user+':'+pass, headers: { 'Accept': 'application/json' }}
   http.get(options, function (res) {
@@ -87,6 +85,8 @@ function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
   });
 }
 
+// Updates the data about queues for one group
+// N.B. This schedules itself to run again in 5 seconds
 function getGroupData(group_config) {
   getQueueData(group_config.host, group_config.port, group_config.vhost, group_config.user, group_config.pass, group_config.queue_names, function (queue_data) {
     group_data[group_config.group_name] = {name: group_config.group_name, queues: queue_data};
@@ -94,6 +94,28 @@ function getGroupData(group_config) {
   });
 };
 
-group_configs.forEach(function (group_config) {
-  getGroupData(group_config);
+// Start actually doing something by reading the group configuration file
+var group_configs_filename = process.env['GROUP_CONFIGS'] || path.join(__dirname, 'group_configs.json');
+console.log('Read group configuration from ' + group_configs_filename);
+fs.readFile(group_configs_filename, function (err, data) {
+  if (err) {
+    console.log('Error reading config file ' + group_configs_filename + ': ' + err);
+  } else {
+    group_configs = JSON.parse(data);
+    // N.B. getGroupData schedules itself to run every 5 seconds
+    group_configs.forEach(function (group_config) {
+      getGroupData(group_config);
+    });
+
+    var port = parseInt(process.env['PORT']) || 3000
+    
+    var server = app.listen(port, function () {
+      var host = server.address().address;
+      var port = server.address().port;
+    
+      console.log('rabbitwatch listening at http://%s:%s', host, port);
+    });
+  }
 });
+
+
