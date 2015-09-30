@@ -14,8 +14,8 @@ Watch multiple RabbitMQ servers
  
 ## environment variables
 
-PORT sets the port the HTTP server will listen on (default 3000)
-GROUP_CONFIGS sets the filename for the group configuration file (default group_configs.json in the root directory)
+* PORT sets the port the HTTP server will listen on (default 3000)
+* GROUP_CONFIGS sets the filename for the group configuration file (default group_configs.json in the root directory)
 
 ## configuration
 
