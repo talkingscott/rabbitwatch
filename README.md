@@ -11,7 +11,21 @@ Watch multiple RabbitMQ servers
 * edit group_configs.json
 * run node rabbitwatch.js
 * point your browser to localhost:3000
- 
+
+here's a transcript
+
+```bash
+git clone https://github.com/talkingscott/rabbitwatch
+cd rabbitwatch
+npm install
+cd public
+bower install
+cd ..
+vi group_configs.json
+node rabbitwatch.js
+# separately fire up a browser tab to http://localhost:3000
+```
+
 ## environment variables
 
 * PORT sets the port the HTTP server will listen on (default 3000)
