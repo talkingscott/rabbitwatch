@@ -88,8 +88,10 @@ function getQueueData(host, port, vhost, user, pass, queue_names, cb) {
 // Updates the data about queues for one group
 // N.B. This schedules itself to run again in 5 seconds
 function getGroupData(group_config) {
-  getQueueData(group_config.host, group_config.port, group_config.vhost, group_config.user, group_config.pass, group_config.queue_names, function (queue_data) {
-    group_data[group_config.group_name] = {name: group_config.group_name, queues: queue_data};
+  var group_name = group_config.group_name;
+  var rabbitmq = group_config.rabbitmq;
+  getQueueData(rabbitmq.host, rabbitmq.port, rabbitmq.vhost, rabbitmq.user, rabbitmq.pass, rabbitmq.queue_names, function (queue_data) {
+    group_data[group_name] = {name: group_name, rabbitmq: {queues: queue_data}};
     setTimeout(getGroupData, 5000, group_config);
   });
 };

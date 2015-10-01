@@ -58,7 +58,7 @@
         '      </thead>\n' +
         '      <tbody>\n';
 
-        group.queues.forEach(function (queue) {
+        group.rabbitmq.queues.forEach(function (queue) {
           html += sprintf('        <tr><td>%s</td><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%f</td><td>%f</td><td>%f</td></tr>\n', queue.name, queue.state, queue.total, queue.ready, queue.unacknowledged, queue.publish_rate, queue.deliver_rate, queue.ack_rate);
         });
 

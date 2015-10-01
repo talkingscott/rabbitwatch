@@ -1,4 +1,8 @@
 [
-  {"group_name": "performance", "host": "localhost", "port": 15672, "vhost": "/", "user": "guest", "pass": "guest", "queue_names": ["hello.world.queue", "tester.tester"]},
-  {"group_name": "integration", "host": "localhost", "port": 15672, "vhost": "/", "user": "guest", "pass": "guest", "queue_names": ["jenga.danube", "danube.matador", "danube.assetpublisher"]}
+  {"group_name": "performance",
+   "rabbitmq": {"host": "localhost", "port": 15672, "vhost": "/", "user": "guest", "pass": "guest", "queue_names": ["hello.world.queue", "tester.tester"]}
+  },
+  {"group_name": "integration",
+   "rabbitmq": {"host": "localhost", "port": 15672, "vhost": "/", "user": "guest", "pass": "guest", "queue_names": ["jenga.danube", "danube.matador", "danube.assetpublisher"]}
+  }
 ]
