@@ -1,5 +1,5 @@
 # rabbitwatch
-Watch multiple RabbitMQ servers
+Watch queues on multiple RabbitMQ servers in a single browser tab
 
 ## getting started
 
@@ -29,7 +29,7 @@ node rabbitwatch.js
 ## environment variables
 
 * PORT sets the port the HTTP server will listen on (default 3000)
-* GROUP_CONFIGS sets the filename for the group configuration file (default group_configs.json in the root directory)
+* GROUP_CONFIGS sets the filename for the group configuration file (default group_configs.json in the project directory)
 
 ## configuration
 
